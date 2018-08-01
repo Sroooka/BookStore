@@ -10,14 +10,19 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(
+prePostEnabled = true,
+securedEnabled = true,
+jsr250Enabled = true)
 public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 	@Override
@@ -41,9 +46,11 @@ public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
 		.logout()
 		.permitAll()
 		.logoutUrl("/logout")
-		.logoutSuccessUrl("/login?logout");
+		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+		.and()
+		.exceptionHandling().accessDeniedPage("/403");
 
-		// httpSecurity.csrf().disable();
+		//httpSecurity.csrf().disable();
 		// httpSecurity.headers().frameOptions().disable();
 	}
 
@@ -60,5 +67,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
 		.and()
 		.withUser("sroka").password(passwordEncoder().encode("sroka")).roles("ADMIN");
 	}
+	
+@Override
+public void addViewControllers(ViewControllerRegistry registry) {
+	registry.addViewController("/403").setViewName("403");
+}
 
 }

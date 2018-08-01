@@ -23,4 +23,5 @@ public class BookApplication extends SpringBootServletInitializer {
     public LayoutDialect layoutDialect() {
         return new LayoutDialect();
     }
+    
 }

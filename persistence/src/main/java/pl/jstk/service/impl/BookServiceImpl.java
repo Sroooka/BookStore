@@ -1,8 +1,10 @@
 package pl.jstk.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.jstk.entity.BookEntity;
+import pl.jstk.enumerations.Pair;
 import pl.jstk.mapper.BookMapper;
 import pl.jstk.repository.BookRepository;
 import pl.jstk.service.BookService;
@@ -57,6 +59,53 @@ public class BookServiceImpl implements BookService {
 	public BookTo findBookByID(long id) {
 		return BookMapper.map(bookRepository.getOne(id));
 
+	}
+
+	@Override
+	public Pair<List<BookTo>, String> findByCriteria(BookTo criteria) {
+		String message = "";
+		
+		List<BookTo> presentationList = new ArrayList<>();
+		List<BookEntity> foundList = new ArrayList<>();
+		List<BookEntity> foundByAuthor = new ArrayList<>();
+		List<BookEntity> foundByTitle = new ArrayList<>();
+		if (!criteria.getAuthors().isEmpty()) {
+			foundByAuthor = bookRepository.findBookByAuthor(criteria.getAuthors());
+		}else{
+			foundByAuthor = bookRepository.findAll();
+		}
+		if (!criteria.getTitle().isEmpty()) {
+			foundByTitle = bookRepository.findBookByTitle(criteria.getTitle());
+		}else{
+			foundByTitle = bookRepository.findAll();
+		}
+
+		for (BookEntity book : foundByAuthor) {
+			if (!foundList.contains(book)) {
+				foundList.add(book);
+			}
+		}
+		for (BookEntity book : foundByTitle) {
+			if (!foundList.contains(book)) {
+				foundList.add(book);
+			}
+		}
+		
+		for(BookEntity book : foundList){
+			if(foundByAuthor.contains(book) && foundByTitle.contains(book)){
+				presentationList.add(BookMapper.map(book));
+			}
+		}
+		
+		if (presentationList.isEmpty()) {
+			message = "No books found!";
+		} else {
+			int foundBooksAmount = presentationList.size();
+			message = (foundBooksAmount == 1) ? "1 book" : foundBooksAmount + " books";
+			message += " found by your criteria!";
+		}
+		
+		return new Pair<List<BookTo>, String>(presentationList, message);
 	}
 
 }

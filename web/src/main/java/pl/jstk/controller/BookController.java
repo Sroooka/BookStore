@@ -1,29 +1,24 @@
 package pl.jstk.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.filter.OrderedHiddenHttpMethodFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import pl.jstk.constants.ModelConstants;
 import pl.jstk.constants.ViewNames;
-import pl.jstk.enumerations.BookStatus;
+import pl.jstk.enumerations.Pair;
 import pl.jstk.service.BookService;
 import pl.jstk.to.BookTo;
 
@@ -38,10 +33,10 @@ public class BookController {
 	}
 
 	@Bean
-    public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
-        return new OrderedHiddenHttpMethodFilter();
-    }
-	
+	public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
+		return new OrderedHiddenHttpMethodFilter();
+	}
+
 	@RequestMapping(value = "/books", method = RequestMethod.GET)
 	public String welcome(Model model) {
 		List<BookTo> bookList = bookService.findAllBooks();
@@ -57,7 +52,6 @@ public class BookController {
 		return ViewNames.BOOK;
 	}
 
-
 	@RequestMapping(value = "/books/add", method = RequestMethod.GET)
 	public String addBook(Model model) {
 		BookTo newBook = new BookTo();
@@ -66,7 +60,6 @@ public class BookController {
 		return ViewNames.ADDBOOK;
 	}
 
-	
 	@RequestMapping(value = "/greeting", method = RequestMethod.POST)
 	public String showDetails(@ModelAttribute BookTo book, Model model) {
 		String emptyFields = "";
@@ -111,48 +104,25 @@ public class BookController {
 	public String showFoundBooks(@ModelAttribute BookTo criteria, Model model) {
 
 		if (criteria.getAuthors().isEmpty() && criteria.getTitle().isEmpty()) {
-			List<BookTo> bookList = bookService.findAllBooks();
-			model.addAttribute(ModelConstants.ADDBOOKINFONEGATIVE, "No criteria - showing all books!");
-			model.addAttribute(ModelConstants.BOOKLIST, bookList);
-			return ViewNames.BOOKS;
+			return this.welcome(model);
 		}
+		
 
-		// TODO PRZERZUC DO SERWISU
-		List<BookTo> presentationList = new ArrayList<>();
-		List<BookTo> foundByAuthor = new ArrayList<>();
-		List<BookTo> foundByTitle = new ArrayList<>();
-		if (!criteria.getAuthors().isEmpty()) {
-			foundByAuthor = bookService.findBooksByAuthor(criteria.getAuthors());
-		}
-		if (!criteria.getTitle().isEmpty()) {
-			foundByTitle = bookService.findBooksByTitle(criteria.getTitle());
-		}
-
-		for (BookTo book : foundByAuthor) {
-			if (!presentationList.contains(book)) {
-				presentationList.add(book);
-			}
-		}
-		for (BookTo book : foundByTitle) {
-			if (!presentationList.contains(book)) {
-				presentationList.add(book);
-			}
-		}
+		Pair<List<BookTo>, String> listWithMessage = bookService.findByCriteria(criteria);
+		List<BookTo> presentationList = listWithMessage.getF1();
+		String message = listWithMessage.getF2();
 
 		if (presentationList.isEmpty()) {
-			model.addAttribute(ModelConstants.ADDBOOKINFONEGATIVE, "No books found!");
+			model.addAttribute(ModelConstants.ADDBOOKINFONEGATIVE, message);
 			model.addAttribute(ModelConstants.BOOKLIST, null);
 		} else {
-			int foundBooksAmount = presentationList.size();
-			String message = (foundBooksAmount == 1) ? "1 book" : foundBooksAmount + " books";
-			message += " found by your criteria!";
 			model.addAttribute(ModelConstants.ADDBOOKINFOPOSITIVE, message);
 			model.addAttribute(ModelConstants.BOOKLIST, presentationList);
 		}
 		return ViewNames.BOOKS;
 	}
-
 	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/books/delete", method = RequestMethod.DELETE)
 	public String deleteBook(@RequestParam(value = "id") long id, Model model) {
 		String bookTitle = bookService.findBookByID(id).getTitle();
@@ -162,11 +132,10 @@ public class BookController {
 		model.addAttribute(ModelConstants.ADDBOOKINFOPOSITIVE, "Successfully deleted book [" + bookTitle + "]!");
 		return ViewNames.BOOKS;
 	}
-	
-	
-	@ExceptionHandler({AccessDeniedException.class})
-    public String handleException(Model model) {
-        model.addAttribute(ModelConstants.ERROR, "User can't delete books!");
-        return ViewNames.FOURHUNDREDTHREE;
-    }
+
+//	@ExceptionHandler({ AccessDeniedException.class })
+//	public ResponseEntity<String> handleException(Model model) {
+//		//model.addAttribute(ModelConstants.ERROR, "User can't delete books!");
+//		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+//	}
 }
