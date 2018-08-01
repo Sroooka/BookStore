@@ -104,10 +104,10 @@ public class BookController {
 	public String showFoundBooks(@ModelAttribute BookTo criteria, Model model) {
 
 		if (criteria.getAuthors().isEmpty() && criteria.getTitle().isEmpty()) {
+			model.addAttribute(ModelConstants.ADDBOOKINFONEGATIVE, "No criteria - showing all books!");
 			return this.welcome(model);
 		}
 		
-
 		Pair<List<BookTo>, String> listWithMessage = bookService.findByCriteria(criteria);
 		List<BookTo> presentationList = listWithMessage.getF1();
 		String message = listWithMessage.getF2();
