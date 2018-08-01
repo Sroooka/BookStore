@@ -12,6 +12,7 @@ public interface BookService {
     List<BookTo> findBooksByAuthor(String author);
     Pair<List<BookTo>, String> findByCriteria(BookTo criteria);
     BookTo findBookByID(long id);
+    Pair<Boolean, String> canAddBook(BookTo book);
 
     BookTo saveBook(BookTo book);
     void deleteBook(Long id);

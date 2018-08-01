@@ -53,19 +53,16 @@ public class BookServiceImpl implements BookService {
 	@Transactional
 	public void deleteBook(Long id) {
 		bookRepository.deleteById(id);
-
 	}
 
 	@Override
 	public BookTo findBookByID(long id) {
 		return BookMapper.map(bookRepository.getOne(id));
-
 	}
 
 	@Override
 	public Pair<List<BookTo>, String> findByCriteria(BookTo criteria) {
 		String message = "";
-
 		List<BookTo> presentationList = new ArrayList<>();
 		List<BookEntity> foundList = new ArrayList<>();
 		List<BookEntity> foundByAuthor = new ArrayList<>();
@@ -93,5 +90,32 @@ public class BookServiceImpl implements BookService {
 			message += " found by your criteria!";
 		}
 		return new Pair<List<BookTo>, String>(presentationList, message);
+	}
+
+	@Override
+	public Pair<Boolean, String> canAddBook(BookTo book) {
+		String emptyFields = "";
+		boolean canAddBook = true;
+		if (book.getAuthors().isEmpty()) {
+			emptyFields += "Author ";
+			canAddBook = false;
+		}
+		if (book.getTitle().isEmpty()) {
+			emptyFields += "Title ";
+			canAddBook = false;
+		}
+		if (book.getStatus() == null) {
+			emptyFields += "Status ";
+			canAddBook = false;
+		}
+	
+		String successMessage;
+		if(canAddBook){
+			successMessage = "Successfully added Book: " + book.getAuthors() + " - " + book.getTitle()
+			+ " [Status:" + book.getStatus().toString() + "].";
+		}else{
+			successMessage = "Error adding book! Please fill fields: " + emptyFields;
+		}
+		return new Pair<Boolean, String>(canAddBook, successMessage);
 	}
 }

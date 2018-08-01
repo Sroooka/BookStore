@@ -16,47 +16,22 @@ import pl.jstk.constants.ViewNames;
 @Controller
 public class UserController {
 
-	
-
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(@RequestParam(value = "error", defaultValue = "false") String error, Model model) {
-		// model.addAttribute(ModelConstants.ERROR, error);
-		
+
 		model.addAttribute(ModelConstants.ERROR, error);
 		return ViewNames.LOGIN;
 	}
 
-	//@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String logout(Model model) {
-		// model.addAttribute(ModelConstants.ERROR, error);
-		//model.addAttribute(ModelConstants.PARAMLOGOUT, logout);
-		//SecurityContextHolder.getContext().setAuthentication(null);
-		return ViewNames.LOGIN;
-	}
-	
-//	@RequestMapping(value = "/403", method = RequestMethod.GET)
-//	public String error403(Model model) {
-//		// model.addAttribute(ModelConstants.ERROR, error);
-//		//model.addAttribute(ModelConstants.PARAMLOGOUT, logout);
-//		//SecurityContextHolder.getContext().setAuthentication(null);
-//		return ViewNames.FOURHUNDREDTHREE;
-//	}
-	
-	// for 403 access denied page
-		@RequestMapping(value = "/403", method = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE })
-		public ModelAndView accesssDenied(Principal user) {
-
-			ModelAndView model = new ModelAndView();
-
-			if (user != null) {
-				model.addObject("msg", "Hi " + user.getName() 
-				+ ", you do not have permission to access this page!");
-			} else {
-				model.addObject("msg", 
-				"You do not have permission to access this page!");
-			}
-
-			model.setViewName("403");
-			return model;
+	@RequestMapping(value = "/403", method = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE })
+	public ModelAndView accesssDenied(Principal user) {
+		ModelAndView model = new ModelAndView();
+		if (user != null) {
+			model.addObject("msg", "Dear " + user.getName() + ", you have not enough power to do this!");
+		} else {
+			model.addObject("msg", "You have not enough power to do this!");
 		}
+		model.setViewName("403");
+		return model;
+	}
 }
