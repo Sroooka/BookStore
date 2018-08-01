@@ -6,8 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.filter.OrderedHiddenHttpMethodFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +37,11 @@ public class BookController {
 		this.bookService = bookService;
 	}
 
+	@Bean
+    public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new OrderedHiddenHttpMethodFilter();
+    }
+	
 	@RequestMapping(value = "/books", method = RequestMethod.GET)
 	public String welcome(Model model) {
 		List<BookTo> bookList = bookService.findAllBooks();
@@ -47,6 +57,7 @@ public class BookController {
 		return ViewNames.BOOK;
 	}
 
+
 	@RequestMapping(value = "/books/add", method = RequestMethod.GET)
 	public String addBook(Model model) {
 		BookTo newBook = new BookTo();
@@ -55,6 +66,7 @@ public class BookController {
 		return ViewNames.ADDBOOK;
 	}
 
+	
 	@RequestMapping(value = "/greeting", method = RequestMethod.POST)
 	public String showDetails(@ModelAttribute BookTo book, Model model) {
 		String emptyFields = "";
@@ -140,7 +152,8 @@ public class BookController {
 		return ViewNames.BOOKS;
 	}
 
-	@RequestMapping(value = "/books/delete", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/books/delete", method = RequestMethod.DELETE)
 	public String deleteBook(@RequestParam(value = "id") long id, Model model) {
 		String bookTitle = bookService.findBookByID(id).getTitle();
 		bookService.deleteBook(id);
@@ -149,4 +162,11 @@ public class BookController {
 		model.addAttribute(ModelConstants.ADDBOOKINFOPOSITIVE, "Successfully deleted book [" + bookTitle + "]!");
 		return ViewNames.BOOKS;
 	}
+	
+	
+	@ExceptionHandler({AccessDeniedException.class})
+    public String handleException(Model model) {
+        model.addAttribute(ModelConstants.ERROR, "User can't delete books!");
+        return ViewNames.FOURHUNDREDTHREE;
+    }
 }

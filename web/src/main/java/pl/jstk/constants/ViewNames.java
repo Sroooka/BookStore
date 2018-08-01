@@ -14,4 +14,5 @@ public final class ViewNames implements Serializable {
 	public static final String GREETING = "greeting";
 	public static final String SEARCH = "search";
 	public static final String SEARCHING = "searching";
+	public static final String FOURHUNDREDTHREE = "403";
 }

@@ -1,50 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{fragments/layout}">
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/layout}">
 <head>
-    <title>Books</title>
+<title>Books</title>
 </head>
 <body>
-<div layout:fragment="content" th:remove="tag">
-<section>
-    <div class="jumbotron">
-        <div class="container">
-            <h1>Books</h1>
-            <p>This page contains all informations about books</p>
-            <p  style="color:green;font-size:80%;" th:text="${addBookInfoPositive}"></p>
-            <p  style="color:red;font-size:80%;" th:text="${addBookInfoNegative}"></p>
-        </div>
-    </div>
-</section>
+	<div layout:fragment="content" th:remove="tag">
+		<section>
+			<div class="jumbotron">
+				<div class="container">
+					<h1>Books</h1>
+					<p>This page contains all informations about books</p>
+					<p style="color: green; font-size: 80%;"
+						th:text="${addBookInfoPositive}"></p>
+					<p style="color: red; font-size: 80%;"
+						th:text="${addBookInfoNegative}"></p>
+				</div>
+			</div>
+		</section>
 
-<section class="container">
-    <div class="row">
-        <th:block th:each="book : ${bookList}">
-            <div class="col-sm-6 col-md-3" style="padding-bottom: 15px">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <h3 th:text="${book.id}"></h3>
-                        <p th:text="${book.title}"></p>
-                        <p th:text="${book.authors}"></p>
-                        <p th:text="${book.status}">Status: </p>
-                        <p>
-                            <a th:href="@{'/books/book?id='+${book.id}}"
-                               class="btn btn-primary"> <span
-                                    class="glyphicon glyphicon-book"/></span> Details
-                            </a>
-                            <a th:href="@{'/books/delete?id='+${book.id}}"
-                               class="btn btn-danger"> <span
-                                    class="glyphicon glyphicon-trash"/></span> Delete
-                            </a>
-                        </p>
+		<section class="container">
+			<div class="row">
+				<th:block th:each="book : ${bookList}">
+					<div class="col-sm-6 col-md-3" style="padding-bottom: 10px">
+						<div class="thumbnail">
+							<div class="caption">
+								<h3 th:text="${book.id}"></h3>
+								<p th:text="${book.title}"></p>
+								<p th:text="${book.authors}"></p>
+								<p th:text="${book.status}"></p>
+								<div style="display: inline;" align="center">
+									<div style="float: left;">
+										<a th:href="@{'/books/book?id='+${book.id}}"
+											class="btn btn-primary"> <span
+											class="glyphicon glyphicon-book" /></span> Details
+										</a>
+									</div>
+									<div style="float: left; margin-left:10px">
+										<form th:method="delete" th:action="@{/books/delete}">
+											<input type="hidden" name="id" th:value="${book.id}" />
+											<button class="btn btn-danger" type="submit">
+												<span class="glyphicon glyphicon-trash" /></span> Delete
+											</button>
+										</form>
+									</div>
+								</div>
+								<br>
+								<p></p>
 
-                    </div>
-                </div>
-            </div>
-        </th:block>
-    </div>
-</section>
-</div>
+							</div>
+
+						</div>
+					</div>
+
+
+				</th:block>
+			</div>
+		</section>
+	</div>
 </body>
 </html>

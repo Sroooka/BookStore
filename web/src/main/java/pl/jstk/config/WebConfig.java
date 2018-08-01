@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 	@Override
@@ -25,9 +27,8 @@ public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-
 		httpSecurity.authorizeRequests()
-		.antMatchers("/*", "/books/book", "/login*", "/webjars/**", "/img", "/css")
+		.antMatchers("/*", "/books/book", "/login*","/books/search*","/delete*", "/css/*", "/img/*", "/webjars/**")
 		.permitAll()
 		.anyRequest()
 		.authenticated()
@@ -53,8 +54,11 @@ public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN").and()
-				.withUser("user").password(passwordEncoder().encode("user")).roles("USER");
+		auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
+		.and()
+		.withUser("user").password(passwordEncoder().encode("user")).roles("USER")
+		.and()
+		.withUser("sroka").password(passwordEncoder().encode("sroka")).roles("ADMIN");
 	}
 
 }

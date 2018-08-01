@@ -1,35 +1,61 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
-<th:block th:fragment="header">
-    <nav class="navbar navbar-inverse navbar-static-top">
-        <div class="container-fluid">
+	<th:block th:fragment="header">
+		<nav class="navbar navbar-inverse navbar-static-top">
+			<div class="container-fluid">
+
+				<!--
             <div class="navbar-header">
-                <a class="navbar-brand" th:href="@{/}">
+			<a class="navbar-brand" th:href="@{/}">
                     <img th:src="@{/web/src/main/resources/static/img/logo.png}" alt="logo"/>
                 </a>
             </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a th:href="@{/}">Home</a>
-                    </li>
-                    <li>
-                        <a th:href="@{/books}">Books</a>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li  style="display: inline-block;">
-                        <a th:href="@{/logout}"><span class="glyphicon glyphicon-log-out"></span>Log out</a></li>
-                    <li  style="display: inline-block;"><a th:href="@{/login}"><span
-                            class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                </ul>
-            </div>
-            <div>
-            </div>
-        </div>
-    </nav>
-</th:block>
+			-->
+
+
+
+				<div id="navbar" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li><a th:href="@{/}">Home</a></li>
+						<li><a th:href="@{/books}">Books</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+
+
+
+
+						<li style="display: inline-block;">
+
+							<div sec:authorize="hasRole('USER')"
+								style="color: #b2b2b2; font-size: 80%; margin-top: 10px;">Logged
+								with role: User</div>
+							<div sec:authorize="hasRole('ADMIN')"
+								style="color: #b2b2b2; font-size: 80%; margin-top: 10px;">Logged
+								with role: Admin</div>
+
+							<table>
+								<tr>
+									<td><div sec:authorize="isAuthenticated()"
+											style="color: #e8e8e8; font-size: 100%;">Hello</div></td>
+									<td><div sec:authorize="isAuthenticated()"
+											sec:authentication="name"
+											style="color: #ffffff; font-size: 100%; float: left; margin-left: 10px;"></div></td>
+								</tr>
+							</table>
+						</li>
+
+
+						<li sec:authorize="isAuthenticated()" style="display: inline-block;"><a th:href="@{/logout} "><span
+								class="glyphicon glyphicon-log-out"></span>Log out</a></li>
+						<li sec:authorize="isAnonymous()" style="display: inline-block;"><a th:href="@{/login}"><span
+								class="glyphicon glyphicon-log-in"></span> Login</a></li>
+					</ul>
+				</div>
+				<div></div>
+			</div>
+		</nav>
+	</th:block>
 </body>
 </html>
