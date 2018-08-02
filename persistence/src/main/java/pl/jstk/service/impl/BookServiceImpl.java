@@ -77,7 +77,7 @@ public class BookServiceImpl implements BookService {
 		} else {
 			foundByTitle = bookRepository.findAll();
 		}
-
+		
 		foundList = foundByAuthor;
 		foundList.retainAll(foundByTitle);
 		presentationList = foundList.stream().map(BookMapper::map).collect(Collectors.toList());
@@ -108,14 +108,20 @@ public class BookServiceImpl implements BookService {
 			emptyFields += "Status ";
 			canAddBook = false;
 		}
-	
+
 		String successMessage;
-		if(canAddBook){
-			successMessage = "Successfully added Book: " + book.getAuthors() + " - " + book.getTitle()
-			+ " [Status:" + book.getStatus().toString() + "].";
-		}else{
+		if (canAddBook) {
+			successMessage = "Successfully added Book: " + book.getAuthors() + " - " + book.getTitle() + " [Status:"
+					+ book.getStatus().toString() + "].";
+		} else {
 			successMessage = "Error adding book! Please fill fields: " + emptyFields;
 		}
 		return new Pair<Boolean, String>(canAddBook, successMessage);
+	}
+
+	@Override
+	@Transactional
+	public void deleteAllBooks() {
+		bookRepository.deleteAll();
 	}
 }

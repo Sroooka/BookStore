@@ -16,5 +16,5 @@ public final class ModelConstants implements Serializable {
 	public static final String ADDBOOKINFONEGATIVE = "addBookInfoNegative";
 	public static final String ERROR = "error";
 	public static final String PARAMLOGOUT = "param.logout";
-	
+	public static final String MESSAGE403 = "msg403";
 }

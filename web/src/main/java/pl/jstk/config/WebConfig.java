@@ -19,39 +19,39 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-prePostEnabled = true,
-securedEnabled = true,
-jsr250Enabled = true)
+@EnableGlobalMethodSecurity
+	(prePostEnabled = true, 
+	securedEnabled = true, 
+	jsr250Enabled = true)
 public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
+		registry.addResourceHandler("/webjars/**")
+		.addResourceLocations("/webjars/");
 	}
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeRequests()
-		.antMatchers("/*", "/books/book", "/login*","/books/search*","/delete*", "/css/*", "/img/*", "/webjars/**")
-		.permitAll()
-		.anyRequest()
-		.authenticated()
-		.and()
-		.formLogin()
-		.loginPage("/login")
-		.defaultSuccessUrl("/")
-		.failureUrl("/login?error=true")
-		.and()
-		.logout()
-		.permitAll()
-		.logoutUrl("/logout")
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-		.and()
-		.exceptionHandling().accessDeniedPage("/403");
-
-		//httpSecurity.csrf().disable();
-		// httpSecurity.headers().frameOptions().disable();
+				.antMatchers("/*", "/books/book", "/login*", "/books/search*", "/delete*", "/css/*", "/img/*",
+						"/webjars/**")
+				.permitAll()
+				.anyRequest()
+				.authenticated()
+				.and()
+				.formLogin()
+				.loginPage("/login")
+				.defaultSuccessUrl("/")
+				.failureUrl("/login?error=true")
+				.and()
+				.logout()
+				.permitAll()
+				.logoutUrl("/logout")
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.and()
+				.exceptionHandling()
+				.accessDeniedPage("/403");
 	}
 
 	@Bean
@@ -61,16 +61,21 @@ public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
+		auth
+		.inMemoryAuthentication()
+		.withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
 		.and()
 		.withUser("user").password(passwordEncoder().encode("user")).roles("USER")
+		.and().withUser("sroka").password(passwordEncoder().encode("sroka")).roles("ADMIN")
 		.and()
-		.withUser("sroka").password(passwordEncoder().encode("sroka")).roles("ADMIN");
+		.withUser("Heniek").password(passwordEncoder().encode("Heniek")).roles("USER");
 	}
-	
-@Override
-public void addViewControllers(ViewControllerRegistry registry) {
-	registry.addViewController("/403").setViewName("403");
-}
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry
+		.addViewController("/403")
+		.setViewName("403");
+	}
 
 }

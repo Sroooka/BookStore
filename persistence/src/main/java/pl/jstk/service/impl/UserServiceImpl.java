@@ -28,5 +28,4 @@ public class UserServiceImpl implements UserService {
 		List<UserEntity> entity = userRepository.findUsersByName(name);
 		return UserMapper.map2To(entity);
 	}
-
 }

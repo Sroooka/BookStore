@@ -23,24 +23,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class HomeControllerTest {
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    @Before
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new HomeController()).build();
-    }
+	@Before
+	public void setup() {
+		mockMvc = MockMvcBuilders.standaloneSetup(new HomeController()).build();
+	}
 
-    @Test
-    public void testHomePage() throws Exception {
-        // given when
-        ResultActions resultActions = mockMvc.perform(get("/"));
-        // then
-        resultActions.andExpect(status().isOk())
-                     .andExpect(view().name("welcome"))
-                     .andDo(print())
-                     .andExpect(model().attribute(ModelConstants.MESSAGE, HomeController.WELCOME))
-                     .andExpect(content().string(containsString("")));
-
-    }
+	@Test
+	public void testHomePage() throws Exception {
+		// given when
+		ResultActions resultActions = mockMvc.perform(get("/"));
+		// then
+		resultActions.andExpect(status().isOk())
+				.andExpect(view().name("welcome"))
+				.andDo(print())
+				.andExpect(model().attribute(ModelConstants.MESSAGE, HomeController.WELCOME))
+				.andExpect(content().string(containsString("")));
+	}
 
 }

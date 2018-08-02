@@ -16,7 +16,8 @@ import pl.jstk.enumerations.BookStatus;
 @Entity
 @Table(name = "BOOK")
 public class BookEntity implements Serializable {
-
+	private static final long serialVersionUID = 5707076159745487372L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

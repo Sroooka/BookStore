@@ -28,30 +28,27 @@
 						<spanth th:text="${book.authors}"></spanth>
 					</p>
 					<p>
-						
-						<div style="display: inline;" align="center">
-									<div style="float: left;">
-										<a th:href="@{'/books'}" class="btn btn-default"> <span
-							class="glyphicon glyphicon-arrow-left"></span> Back
-										</a>
-									</div>
-									<div style="float: left; margin-left:10px">
-										<form th:method="delete" th:action="@{/books/delete}">
-											<input type="hidden" name="id" th:value="${book.id}" />
-											<button class="btn btn-danger" type="submit">
-												<span class="glyphicon glyphicon-trash" /></span> Delete this book
-											</button>
-										</form>
-									</div>
-								</div>
-						
-						
-
-
+					<div style="display: inline;" align="center">
+						<div style="float: left;">
+							<a th:href="@{'/books'}" class="btn btn-default"> <span
+								class="glyphicon glyphicon-arrow-left"></span> Back
+							</a>
+						</div>
+						<div style="float: left; margin-left: 10px">
+							<form th:method="delete" th:action="@{/books/delete}">
+								<input type="hidden" name="id" th:value="${book.id}" />
+								<button class="btn btn-danger" type="submit">
+									<span class="glyphicon glyphicon-trash" /></span> Delete this book
+								</button>
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
-		<br><br><br>
+		<br>
+		<br>
+		<br>
 	</div>
 </body>
 </html>
